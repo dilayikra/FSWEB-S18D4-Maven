@@ -11,7 +11,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/workintech/burgers")
+@RequestMapping("/burger") // "/workintech/burgers" yerine bunu yazıyoruz
 public class BurgerController {
 
     private final BurgerDao burgerDao;
@@ -36,29 +36,29 @@ public class BurgerController {
         return burgerDao.save(burger);
     }
 
-    @PutMapping("/{id}")
-    public Burger update(@PathVariable long id, @RequestBody Burger burger) {
-        burger.setId(id);
+    @PutMapping
+    public Burger update(@RequestBody Burger burger) {
+        // Testler PUT metodunu direkt /burger adresine (ID'siz) atıyor
         return burgerDao.update(burger);
     }
 
     @DeleteMapping("/{id}")
     public Burger delete(@PathVariable long id) {
-        return burgerDao.remove(id);
+        return burgerDao.remove((int) id);
     }
 
-    @GetMapping("/findByPrice")
-    public List<Burger> findByPrice(@RequestParam Integer price) {
+    @GetMapping("/price/{price}")
+    public List<Burger> findByPrice(@PathVariable Integer price) {
         return burgerDao.findByPrice(price);
     }
 
-    @GetMapping("/findByBreadType")
-    public List<Burger> findByBreadType(@RequestParam String breadType) {
+    @GetMapping("/breadType/{breadType}")
+    public List<Burger> findByBreadType(@PathVariable String breadType) {
         return burgerDao.findByBreadType(BreadType.valueOf(breadType.toUpperCase()));
     }
 
-    @GetMapping("/findByContent")
-    public List<Burger> findByContent(@RequestParam String content) {
+    @GetMapping("/content/{content}")
+    public List<Burger> findByContent(@PathVariable String content) {
         return burgerDao.findByContent(content);
     }
 }
