@@ -2,10 +2,12 @@ package com.workintech.s18d1.dao;
 
 import com.workintech.s18d1.entity.BreadType;
 import com.workintech.s18d1.entity.Burger;
+import com.workintech.s18d1.exceptions.BurgerException; // Exception importunu ekledik
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus; // HttpStatus için ekledik
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -29,7 +31,12 @@ public class BurgerDaoImpl implements BurgerDao {
 
     @Override
     public Burger findById(long id) {
-        return entityManager.find(Burger.class, id);
+        // BURASI KRİTİK: Testlerin beklediği hata fırlatma kısmı
+        Burger burger = entityManager.find(Burger.class, id);
+        if (burger == null) {
+            throw new BurgerException("Burger with given id is not exist: " + id, HttpStatus.NOT_FOUND);
+        }
+        return burger;
     }
 
     @Override
@@ -71,6 +78,7 @@ public class BurgerDaoImpl implements BurgerDao {
     @Transactional
     @Override
     public Burger remove(long id) {
+        // findById zaten hata fırlatacağı için burada id yoksa otomatik hata döner
         Burger burger = findById(id);
         entityManager.remove(burger);
         return burger;
